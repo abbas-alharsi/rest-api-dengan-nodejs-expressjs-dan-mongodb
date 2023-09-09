@@ -17,8 +17,8 @@
                     <input type="text" name="productName" class="form-control mb-2" placeholder="Nama Produk" autofocus>
                     <input type="text" name="category" class="form-control mb-2" placeholder="Kategori">
                     <input type="text" name="price" class="form-control mb-2" placeholder="Harga">
-                    <input type="text" name="qty" class="form-control mb-2" placeholder="Stock">
-                    <button type="submit" class="btn btn-primary">Tambah Produk</button>
+                    <input type="text" name="qty" class="form-control mb-2" placeholder="Qty">
+                    <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
             </div>
             <div class="col-8">
@@ -29,7 +29,7 @@
                                 <th>Nama Produk</th>
                                 <th>Kategori</th>
                                 <th>Harga</th>
-                                <th>Stok</th>
+                                <th>Qty</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -42,26 +42,26 @@
         </div>
     </div>
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog">
             <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="editModalLabel">Edit Product</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="post" id="editForm">
+                <form method="POST" id="editForm">
                     <input type="text" name="newProductName" id="newProductName" class="form-control mb-2" placeholder="Nama Produk" autofocus>
                     <input type="text" name="newCategory" id="newCategory" class="form-control mb-2" placeholder="Kategori">
                     <input type="text" name="newPrice" id="newPrice" class="form-control mb-2" placeholder="Harga">
-                    <input type="text" name="newQty" id="newQty" class="form-control mb-2" placeholder="Stock">
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <input type="text" name="newQty" id="newQty" class="form-control mb-2" placeholder="Qty">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
                 </form>
             </div>
             </div>
         </div>
     </div>
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog">
             <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="deleteModalLabel">Delete Product</h1>
@@ -69,11 +69,10 @@
             </div>
             <div class="modal-body">
                 <div class="col-12">Hapus data ini?</div>
-                <button  class="btn btn-secondary float-end" data-bs-dismiss="modal">Tidak</button>
-                <form id="deleteForm" method="post">
-                    <button class="btn btn-danger float-end me-2">Ya Hapus</button>
+                <button class="btn float-end" data-bs-dismiss="modal">Tidak</button>
+                <form method="POST" id="deleteForm">
+                    <button type="submit" class="btn btn-danger float-end me-2">Ya Hapus</button>
                 </form>
-                
             </div>
             </div>
         </div>
@@ -87,28 +86,27 @@
 
             const data = JSON.parse(xhttp.responseText)
             let tbodyProduct = ''
-            data.map(row => {
-                tbodyProduct+=`<tr>
-                    <td>${row.product}</td>
-                    <td>${row.category}</td>
-                    <td>${row.price}</td>
-                    <td>${row.qty}</td>
-                    <td>
-                        <button onclick="showDeleteModal('${row._id}')" class="btn btn-sm btn-danger float-end" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
-                        <button onclick="showEditModal('${row._id}')" class="btn btn-sm btn-light border float-end me-2" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button>
-                    </td>
-                </tr>`
+            data.map( row => {
+                tbodyProduct += `<tr>
+                                    <td>${row.product}</td>
+                                    <td>${row.category}</td>
+                                    <td>${row.price}</td>
+                                    <td>${row.qty}</td>
+                                    <td>
+                                        <button onclick="showDeleteModal('${row._id}')" data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn btn-sm btn-danger float-end">Delete</button>
+                                        <button onclick="showEditModal('${row._id}')" data-bs-toggle="modal" data-bs-target="#editModal" class="btn btn-sm btn-light border float-end me-2">Edit</button>    
+                                    </td>
+                                </tr>`
             })
             document.getElementById('productData').innerHTML = tbodyProduct
         }
 
         const showEditModal = (id) => {
             const xhttp = new XMLHttpRequest()
-            xhttp.open("GET", `http://localhost:8080/rest-api/products/${id}`, false)
+            xhttp.open("GET",`http://localhost:8080/rest-api/products/${id}`, false)
             xhttp.send()
 
             const data = JSON.parse(xhttp.responseText)[0]
-            console.log(data)
             document.getElementById('newProductName').value = data.product
             document.getElementById('newCategory').value = data.category
             document.getElementById('newPrice').value = data.price
@@ -118,8 +116,9 @@
         }
 
         const showDeleteModal = (id) => {
-            document.getElementById('deleteForm').action = `http://localhost:8080/rest-api/products/delete/${id}` 
+            document.getElementById('deleteForm').action = `http://localhost:8080/rest-api/products/delete/${id}`
         }
+
     </script>
 </body>
 </html>
